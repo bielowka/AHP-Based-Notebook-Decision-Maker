@@ -1,3 +1,7 @@
+import itertools
+import random
+
+import scipy.special
 from Matrix import Matrix
 
 
@@ -8,9 +12,10 @@ class Object_comparison_layer:
         self.num_of_objects = num_of_objects
         self.criteria = criteria
         self.Ws = []
+        self.num_of_pages = self.num_of_criteria * int(scipy.special.binom(self.num_of_objects, 2))
 
         for i in range(self.num_of_criteria):
-            c = Matrix(num_of_objects)
+            c = Matrix(num_of_objects, self.criteria)
             self.Cs.append(c)
 
     def check_fullness(self):
@@ -26,8 +31,11 @@ class Object_comparison_layer:
         return self.Ws
 
     def expertise(self):
-        for i in range(self.num_of_criteria):
-            pass
-            # TODO
-            # rządaj wyniku porównania każdej pary przedmiotów w danym kryterium
-            # w losowej kolejności
+        pairs = [pair for pair in itertools.combinations(self.criteria,2)]
+        used = [False for _ in range(len(pairs))]
+        while False in used:
+            i = random.randint(0,len(pairs)-1)
+            if not used[i]:
+                used[i] = True
+                yield pairs[i],self.Cs[0]
+            # TODO zmienić żeby wiecej obj

@@ -1,11 +1,16 @@
+import itertools
+import random
+
+import scipy.special
+
 from Matrix import Matrix
 
-
-class Criteria_comparison_layer:
+class Criteria_comparison_layer():
     def __init__(self, criteria):
         self.criteria = criteria
         self.num_of_criteria = len(criteria)
-        self.C = Matrix(self.num_of_criteria)
+        self.C = Matrix(self.num_of_criteria,criteria)
+        self.num_of_pages = int(scipy.special.binom(self.num_of_criteria, 2))
 
     def check_fullness(self):
         if not self.C.is_full():
@@ -17,7 +22,13 @@ class Criteria_comparison_layer:
         return self.C.to_vector()
 
     def expertise(self):
-        for i, j in range(self.num_of_criteria):
-            pass  # TODO
-            # rządaj wyniku porównania każdej kryteriów
-            # w losowej kolejności
+        pairs = [pair for pair in itertools.combinations(self.criteria, 2)]
+        used = [False for _ in range(len(pairs))]
+        while False in used:
+            i = random.randint(0, len(pairs)-1)
+            if not used[i]:
+                used[i] = True
+                yield pairs[i],self.C
+            # TODO
+
+
