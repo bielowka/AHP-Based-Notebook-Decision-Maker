@@ -4,10 +4,11 @@ import math as m
 
 
 class Matrix:
-    def __init__(self, size, criteria):
+    def __init__(self, size, criteria, title):
         self.size = size
         self.criteria = criteria
         self.A = np.zeros((size, size))
+        self.title = title
 
     def is_full(self):
         for i in range(self.size):
@@ -23,9 +24,13 @@ class Matrix:
         norm = [x / sum(vec) for x in vec]
         return norm
 
-    def put(self, crit1, crit2, val):
+    def put_crit(self, crit1, crit2, val):
         self.A[self.criteria.index(crit1)][self.criteria.index(crit2)] = val
         self.A[self.criteria.index(crit2)][self.criteria.index(crit1)] = 1 / val
+
+    def put_obj(self, obj1, obj2, val):
+        self.A[obj1][obj2] = val
+        self.A[obj2][obj1] = 1 / val
 
     def completer(self):
         length = len(self.A)

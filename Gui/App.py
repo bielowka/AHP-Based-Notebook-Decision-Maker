@@ -61,8 +61,8 @@ class QuestionPage(tk.Frame):
         self.controller = controller
         self.page_id = page_id
         self.layer = layer
-        (self.crit1, self.crit2), self.matrix = next(generator)
-        label = tk.Label(self, text=self.crit1+self.crit2, font=controller.title_font)
+        (self.inx1, self.inx2), self.matrix = next(generator)
+        label = tk.Label(self, text=str(self.inx1) + str(self.inx2) + "" + self.matrix.title, font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
         self.slider = tk.Scale(self, from_= 1, to=10, orient=HORIZONTAL)
@@ -73,7 +73,11 @@ class QuestionPage(tk.Frame):
         button.pack()
 
     def show_values(self):
-        self.matrix.put(self.crit1,self.crit2,self.slider.get())
+        if self.matrix.title == "criteria":
+            self.matrix.put_crit(self.inx1, self.inx2, self.slider.get())
+        else:
+            self.matrix.put_obj(self.inx1, self.inx2, self.slider.get())
+
         self.controller.show_frame(self.page_id + 1)
 
 
@@ -89,6 +93,5 @@ class LastPage(tk.Frame):
                            command=self.button_action)
         button.pack()
 
-    def button_action(self):
-        print(self.layer.C)
-        self.controller.show_frame(0)
+    def button_action(self): pass
+        # self.controller.show_frame(0)

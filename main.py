@@ -20,6 +20,19 @@ from Object_comparison_layer import Object_comparison_layer
 from Criteria_weight_layer import Criteria_comparison_layer
 
 if __name__ == "__main__":
-    # app = App(Object_comparison_layer(2,["prize","speed"]))
-    app = App(Criteria_comparison_layer(["A","B","C","D","E","F"]))
+    criteria = ["A","B","C","D","E","F"]
+    objects_num = 3
+    object_comparison_layer = Object_comparison_layer(objects_num,criteria)
+    criteria_comparison_layer = Criteria_comparison_layer(criteria)
+
+    app = App(object_comparison_layer)
     app.mainloop()
+
+    for x in object_comparison_layer.Cs: print(x)  # macierze wypełnione porównań
+
+    app = App(criteria_comparison_layer)
+    app.mainloop()
+
+    print(criteria_comparison_layer.C)  #macierz wypelniona wag kryteriów
+
+    # TODO: tutaj obie warstwy powinny juz byc uzupelnione

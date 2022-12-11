@@ -9,7 +9,7 @@ class Criteria_comparison_layer():
     def __init__(self, criteria):
         self.criteria = criteria
         self.num_of_criteria = len(criteria)
-        self.C = Matrix(self.num_of_criteria,criteria)
+        self.C = Matrix(self.num_of_criteria,criteria,"criteria")
         self.num_of_pages = int(scipy.special.binom(self.num_of_criteria, 2))
 
     def check_fullness(self):
