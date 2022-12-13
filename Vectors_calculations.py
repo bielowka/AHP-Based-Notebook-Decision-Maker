@@ -8,7 +8,7 @@ class Vectors_calculations:
 
     def calculate_object_value(self, index):
         sum_elements = []
-        for i in range (self.num_of_criteria):
+        for i in range(self.num_of_criteria):
             sum_elements.append(self.criteria_comparison_vector[i] * self.objects_comparison_vectors[i][index])
         return sum(sum_elements)
 

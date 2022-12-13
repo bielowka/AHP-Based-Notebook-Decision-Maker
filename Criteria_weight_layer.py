@@ -6,7 +6,8 @@ import scipy.special
 from Matrix import Matrix
 
 class Criteria_comparison_layer():
-    def __init__(self, criteria):
+    def __init__(self, criteria, title=""):
+        self.title = title
         self.criteria = criteria
         self.num_of_criteria = len(criteria)
         self.C = Matrix(self.num_of_criteria,criteria,"criteria")

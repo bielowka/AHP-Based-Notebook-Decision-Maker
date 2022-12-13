@@ -6,7 +6,8 @@ from Matrix import Matrix
 
 
 class Object_comparison_layer:
-    def __init__(self, num_of_objects, criteria):
+    def __init__(self, num_of_objects, criteria, title=""):
+        self.title = title
         self.Cs = []
         self.num_of_criteria = len(criteria)
         self.num_of_objects = num_of_objects
@@ -15,7 +16,7 @@ class Object_comparison_layer:
         self.num_of_pages = self.num_of_criteria * int(scipy.special.binom(self.num_of_objects, 2))
 
         for i in range(self.num_of_criteria):
-            c = Matrix(num_of_objects, self.criteria, "objectCrit" + str(i))
+            c = Matrix(num_of_objects, self.criteria, "\n in "+criteria[i])
             self.Cs.append(c)
 
     def check_fullness(self):
