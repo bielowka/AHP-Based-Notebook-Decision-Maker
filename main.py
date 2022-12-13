@@ -18,6 +18,7 @@
 from Gui.App import App
 from Object_comparison_layer import Object_comparison_layer
 from Criteria_weight_layer import Criteria_comparison_layer
+from Vectors_calculations import Vectors_calculations
 
 if __name__ == "__main__":
     # criteria = ["A","B","C","D","E","F"]
@@ -69,6 +70,9 @@ if __name__ == "__main__":
 
             C = criteria_comparison_layer.C
 
+            vectors_calculations = Vectors_calculations(objects_num,len(C.to_vector()), vectors, C.to_vector())
+            objects_values = vectors_calculations.objects_values()
+            subcrit_ready_matrixes.append(objects_values)
             # TODO: use Vectors_calculations on 'vectors' and 'C', then append result to subcrit_ready_matrixes
             # (chcemy mieć gotowe wektory rankingów do wykorzystania później razem z wektorami z zwykłych kryteriów)
 
@@ -96,6 +100,6 @@ if __name__ == "__main__":
     app.mainloop()
 
     C = criteria_comparison_layer.C # tu masz macierz wag wszystkich kryteriów
-
+    print(Vectors_calculations(len(vectors),len(C.to_vector()), vectors, C.to_vector()))
     # TODO: use Vector_calculations on 'vectors' and 'C' to achieve final ranking
     # TODO: print final ranking
