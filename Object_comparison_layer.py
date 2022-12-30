@@ -16,7 +16,7 @@ class Object_comparison_layer:
         self.num_of_pages = self.num_of_criteria * int(scipy.special.binom(self.num_of_objects, 2))
 
         for i in range(self.num_of_criteria):
-            c = Matrix(num_of_objects, self.criteria, "\n in "+criteria[i])
+            c = Matrix(num_of_objects, self.criteria, "\n in case of "+criteria[i])
             self.Cs.append(c)
 
     def check_fullness(self):

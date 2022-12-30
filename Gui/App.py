@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import font as tkfont, HORIZONTAL, ttk, LEFT, CENTER, RIGHT, X, TOP, BOTTOM
+from tkinter import font as tkfont, HORIZONTAL, LEFT, TOP
 
 
 class App(tk.Tk):
@@ -110,8 +110,6 @@ class LastPage(tk.Frame):
         self.controller = controller
         self.page_id = page_id
         self.layer = layer
-        # label = tk.Label(self, text="This is the last page", font=controller.title_font)
-        # label.pack(side="top", fill="x", pady=10)
         button = tk.Button(self, text="Go to the next comparison",
                            command=self.button_action)
         button.pack(side="bottom", fill="x")

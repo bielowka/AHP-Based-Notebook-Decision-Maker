@@ -1,24 +1,8 @@
-# import numpy as np
-# from numpy.linalg import eig
-#
-#
-# def normalize(x):
-#     fac = abs(x).max()
-#     x_n = x / x.max()
-#     return fac, x_n
-#
-#
-# def to_vector(A):
-#     w, v = eig(A)
-#
-#     vec = [x[0].real for x in v]
-#     norm = [x / sum(vec) for x in vec]
-#     return norm
-
 from Gui.App import App
 from Object_comparison_layer import Object_comparison_layer
 from Criteria_weight_layer import Criteria_comparison_layer
 from Vectors_calculations import Vectors_calculations
+from Consistency_index import Saaty_index
 
 if __name__ == "__main__":
     criteria = ["Rozmiar", "Cena", 'Wygląd', "Bateria", "Specyfikacja", "System operacyjny", ]
@@ -36,7 +20,9 @@ if __name__ == "__main__":
     crit_to_subcrit = [subcriteria0, None, subcriteria2, subcriteria3, subcriteria4, None]
     subcrit_ready_matrixes = []
 
-    objects_num = 2
+    objects_num = 4
+
+    #TODO show fullscreen window, visible all the time, with data about computers
 
     for i in range(len(criteria)):
         if has_subcriteria[i]:
@@ -52,7 +38,6 @@ if __name__ == "__main__":
             app.mainloop()
 
             C = criteria_comparison_layer.C
-
             vectors_calculations = Vectors_calculations(objects_num, len(C.to_vector()), vectors, C.to_vector())
             objects_values = vectors_calculations.objects_values()
             subcrit_ready_matrixes.append(objects_values)
@@ -81,4 +66,13 @@ if __name__ == "__main__":
 
     C = criteria_comparison_layer.C
     final_calculation = Vectors_calculations(objects_num, len(criteria), vectors, C.to_vector())
-    print(final_calculation.objects_values())
+    res_vec = final_calculation.objects_values()
+    results = [(res_vec[i],i) for i in range(objects_num)]
+    results.sort(key=lambda x: x[0])
+    print(results)
+
+
+
+
+
+

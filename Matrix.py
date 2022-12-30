@@ -8,6 +8,7 @@ class Matrix:
         self.size = size
         self.criteria = criteria
         self.A = np.zeros((size, size))
+        for i in range(self.size): self.A[i][i] = 1
         self.title = title
 
     def is_full(self):
@@ -18,11 +19,14 @@ class Matrix:
         return True
 
     def to_vector(self):
-        w, v = eig(self.A)
+        eigenvalues, eigenvectors = eig(self.A)
 
-        vec = [x[0].real for x in v]
-        norm = [x / sum(vec) for x in vec]
-        return norm
+        largest_eigenvalue_idx = np.argmax(eigenvalues)
+
+        principal_eigenvector = eigenvectors[:, largest_eigenvalue_idx]
+
+        principal_eigenvector = principal_eigenvector / np.sum(principal_eigenvector)
+        return [np.round(x.real,3) for x in principal_eigenvector]
 
     def put_crit(self, crit1, crit2, val):
         self.A[self.criteria.index(crit1)][self.criteria.index(crit2)] = val
@@ -86,3 +90,24 @@ class Matrix:
 
     def __str__(self):
         return str(self.A)
+
+
+if __name__ == "__main__":
+    t = Matrix(3,[],"t")
+    # t.put_obj(0,1,2)
+    # t.put_obj(0,2,3)
+    # t.put_obj(1,2,4)
+    # t.put_obj(0,1,1)
+    # t.put_obj(0,2,1)
+    # t.put_obj(0,3,1)
+    # t.put_obj(1,2,1)
+    # t.put_obj(1,3,1)
+    # t.put_obj(2,3,1)
+    t.put_obj(0,1,1/7)
+    t.put_obj(0,2,1/5)
+    t.put_obj(1,2,3)
+
+    print(t.A)
+    print()
+    res = t.to_vector()
+    print(res,"ranking vector")
