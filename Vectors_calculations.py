@@ -12,7 +12,7 @@ class Vectors_calculations:
         sum_elements = []
         for i in range(self.num_of_criteria):
             sum_elements.append(self.criteria_comparison_vector[i] * self.objects_comparison_vectors[i][index])
-        return np.round(sum(sum_elements),3)
+        return np.round(sum(sum_elements), 3)
 
     def objects_values(self):
         values = []

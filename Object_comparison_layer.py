@@ -16,7 +16,7 @@ class Object_comparison_layer:
         self.num_of_pages = self.num_of_criteria * int(scipy.special.binom(self.num_of_objects, 2))
 
         for i in range(self.num_of_criteria):
-            c = Matrix(num_of_objects, self.criteria, "\n in case of "+criteria[i])
+            c = Matrix(num_of_objects, self.criteria, "\n in case of " + criteria[i])
             self.Cs.append(c)
 
     def check_fullness(self):
@@ -33,10 +33,10 @@ class Object_comparison_layer:
 
     def expertise(self):
         for o in range(self.num_of_criteria):
-            pairs = [pair for pair in itertools.combinations([x for x in range(self.num_of_objects)],2)]
+            pairs = [pair for pair in itertools.combinations([x for x in range(self.num_of_objects)], 2)]
             used = [False for _ in range(len(pairs))]
             while False in used:
-                i = random.randint(0,len(pairs)-1)
+                i = random.randint(0, len(pairs) - 1)
                 if not used[i]:
                     used[i] = True
-                    yield pairs[i],self.Cs[o]
+                    yield pairs[i], self.Cs[o]
