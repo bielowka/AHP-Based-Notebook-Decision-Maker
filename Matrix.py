@@ -36,7 +36,7 @@ class Matrix:
         self.A[obj1][obj2] = val
         self.A[obj2][obj1] = 1 / val
 
-    def completer(self):
+    def completer(self): #  WAŻNE: sprawdzenie czy macierz jest nie redukowalna / czy jej graf jest spojny
         length = len(self.A)
         g = np.zeros((length, length))
 
