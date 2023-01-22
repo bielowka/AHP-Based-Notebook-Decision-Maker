@@ -4,7 +4,7 @@ from DataPresentation import data_presentation
 
 
 class App(tk.Tk):
-    def __init__(self, layer, data, objects_num, *args, **kwargs):
+    def __init__(self, layer, data, objects_num, exp_id=0, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         if not hasattr(layer, "num_of_pages") or not hasattr(layer, "expertise"):
@@ -16,11 +16,13 @@ class App(tk.Tk):
         self.num_of_pages = layer.num_of_pages
 
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.wm_title("You are Expert number {id}".format(id=exp_id))
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+
 
         self.frames = {}
 
