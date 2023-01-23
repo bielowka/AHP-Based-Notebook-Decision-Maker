@@ -5,39 +5,27 @@ from Vectors_calculations import Vectors_calculations
 from Consistency_index import Saaty_index
 from ResultsPresentation import results_presentation
 from Expert import Expert
+from Aggregation_judgments import AggregationJudgments
+from Aggregation_priorities import AggregationPriorities
 
 
-def experts_answear(expert):
-    subcrit_vectors = []  #
-    if SHOW_INCONSISTENCY:
-        subcrit_matrixes_for_idx = []
-
+def experts_answer(expert):
     for i in range(len(criteria)):
         if has_subcriteria[i]:
             object_comparison_layer = Object_comparison_layer(objects_num, crit_to_subcrit[i],
                                                               "objects in subcriteria of " + criteria[i])
             criteria_comparison_layer = Criteria_comparison_layer(crit_to_subcrit[i],
                                                                   "importance of subcriteria of " + criteria[i])
-
             app = App(object_comparison_layer, objects_data, objects_num, expert.id)
             app.mainloop()
 
-
-            if SHOW_INCONSISTENCY:
-                matrices = [(Saaty_index(x.A), x.title[12:]) for x in object_comparison_layer.Cs]
-                subcrit_matrixes_for_idx.append(matrices)
-
-            expert.subcrit_matrices[i] = [x for x in object_comparison_layer.Cs]
-            vectors = [x.to_vector() for x in object_comparison_layer.Cs]  #
+            expert.subcrit_matrices[i] = [x.A for x in object_comparison_layer.Cs]
 
             app = App(criteria_comparison_layer, objects_data, objects_num, expert.id)
             app.mainloop()
 
             C = criteria_comparison_layer.C
             expert.subcrit_importance_matrices[i] = C
-            vectors_calculations = Vectors_calculations(objects_num, len(C.to_vector()), vectors, C.to_vector())  #
-            objects_values = vectors_calculations.objects_values()  #
-            subcrit_vectors.append(objects_values)  #
 
     flat_criteria = [criteria[i] for i in range(len(criteria)) if not has_subcriteria[i]]
     flat_criteria_idx = [i for i in range(len(criteria)) if not has_subcriteria[i]]
@@ -46,23 +34,9 @@ def experts_answear(expert):
     app = App(object_comparison_layer, objects_data, objects_num, expert.id)
     app.mainloop()
 
-    flat_criteria_vectors = [x.to_vector() for x in object_comparison_layer.Cs]  #
-
-    matrices = [x for x in object_comparison_layer.Cs]
+    matrices = [x.A for x in object_comparison_layer.Cs]
     for i in range(len(flat_criteria_idx)):
         expert.crit_matrices[flat_criteria_idx[i]] = matrices[i]
-
-    if SHOW_INCONSISTENCY:
-        flat_criteria_matrices_for_idx = [[(Saaty_index(x.A), x.title[12:])] for x in object_comparison_layer.Cs]
-
-    vectors = []  #
-    for i in range(len(criteria)):  #
-        if has_subcriteria[i]:  #
-            vectors.append(subcrit_vectors[0])  #
-            subcrit_vectors.pop(0)  #
-        else:
-            vectors.append(flat_criteria_vectors[0])  #
-            flat_criteria_vectors.pop(0)  #
 
     criteria_comparison_layer = Criteria_comparison_layer(criteria, "importance of each criteria")
     app = App(criteria_comparison_layer, objects_data, objects_num, expert.id)
@@ -70,13 +44,6 @@ def experts_answear(expert):
 
     C = criteria_comparison_layer.C
     expert.importance_matrix = C
-
-    final_calculation = Vectors_calculations(objects_num, len(criteria), vectors, C.to_vector())  #
-    res_vec = final_calculation.objects_values()  #
-    results = [(res_vec[i], i) for i in range(objects_num)]  #
-    results.sort(key=lambda x: x[0])  #
-    expert.show()  #  #
-    return results, subcrit_matrixes_for_idx, flat_criteria_matrices_for_idx
 
 
 if __name__ == "__main__":
@@ -107,13 +74,85 @@ if __name__ == "__main__":
 
     # PROPERTIES
     SHOW_INCONSISTENCY = True
-    NUMBER_OF_EXPERTS = 1
-    EXPERTS_PRIORITIES = [1]  # TODO
+    NUMBER_OF_EXPERTS = 2
+    EXPERTS_PRIORITIES = [0.7, 0.3]
+    assert sum(EXPERTS_PRIORITIES) == 1
 
     # MAIN
     experts = [Expert(i, EXPERTS_PRIORITIES[i], criteria, has_subcriteria, crit_to_subcrit) for i in range(NUMBER_OF_EXPERTS)]
 
-    # TODO indeks liczyć też tylko na uśrednionych
-    results, subcrit_matrixes_for_ind, flat_criteria_matrices = experts_answear(experts[0])
+    for e in experts:
+        experts_answer(e)
 
-    results_presentation(results, subcrit_matrixes_for_ind + flat_criteria_matrices if SHOW_INCONSISTENCY else None)
+    if SHOW_INCONSISTENCY:
+        subcrit_matrixes_for_idx = []
+
+    subcrit_vectors = []
+
+    for i in range(len(criteria)):
+        if has_subcriteria[i]:
+            matrices = []
+            tmp = [e.subcrit_matrices[i] for e in experts]
+            for j in range(len(crit_to_subcrit[i])):
+                tmp2 = []
+                for x in range(NUMBER_OF_EXPERTS):
+                    tmp2.append(tmp[x][j])
+                agrr = AggregationJudgments(NUMBER_OF_EXPERTS,objects_num,EXPERTS_PRIORITIES,tmp2)
+                matrices.append(agrr.get_aggregated_matrix())
+
+            if SHOW_INCONSISTENCY:
+                matricess = [(Saaty_index(x.A), x.title[12:]) for x in matrices]
+                subcrit_matrixes_for_idx.append(matricess)
+
+            vectors = [x.to_vector() for x in matrices]
+
+            Cs = []
+            for e in range(NUMBER_OF_EXPERTS):
+                Cs.append(experts[e].subcrit_importance_matrices[i].to_vector())
+            aggr = AggregationPriorities(NUMBER_OF_EXPERTS,len(crit_to_subcrit[i]),EXPERTS_PRIORITIES,Cs)
+            C = aggr.get_aggregated_vector()
+
+            vectors_calculations = Vectors_calculations(objects_num, len(C), vectors, C)
+            objects_values = vectors_calculations.objects_values()
+            subcrit_vectors.append(objects_values)
+
+    flat_criteria = [criteria[i] for i in range(len(criteria)) if not has_subcriteria[i]]
+    flat_criteria_idx = [i for i in range(len(criteria)) if not has_subcriteria[i]]
+    flat_criteria_matrices = []
+
+    for i in flat_criteria_idx:
+        tmp = []
+        for e in range(NUMBER_OF_EXPERTS):
+            tmp.append(experts[e].crit_matrices[i])
+        aggr = AggregationJudgments(NUMBER_OF_EXPERTS,len(flat_criteria),EXPERTS_PRIORITIES,tmp)
+        flat_criteria_matrices.append(aggr.get_aggregated_matrix())
+
+    flat_criteria_vectors = [x.to_vector() for x in flat_criteria_matrices]
+
+    if SHOW_INCONSISTENCY:
+        flat_criteria_matrices_for_idx = [[(Saaty_index(x.A), x.title[12:])] for x in flat_criteria_matrices]
+
+    vectors = []
+    for i in range(len(criteria)):
+        if has_subcriteria[i]:
+            vectors.append(subcrit_vectors[0])
+            subcrit_vectors.pop(0)
+        else:
+            vectors.append(flat_criteria_vectors[0])
+            flat_criteria_vectors.pop(0)
+
+    Cs = []
+    for e in range(NUMBER_OF_EXPERTS):
+        Cs.append(experts[e].importance_matrix)
+    aggr = AggregationPriorities(NUMBER_OF_EXPERTS, len(criteria), EXPERTS_PRIORITIES, [c.to_vector() for c in Cs])
+    C = aggr.get_aggregated_vector()
+
+    final_calculation = Vectors_calculations(objects_num, len(criteria), vectors, C)
+    res_vec = final_calculation.objects_values()
+    results = [(res_vec[i], i) for i in range(objects_num)]
+    results.sort(key=lambda x: x[0]*(-1))
+
+    results_presentation(results, subcrit_matrixes_for_idx + flat_criteria_matrices_for_idx if SHOW_INCONSISTENCY else None)
+
+
+

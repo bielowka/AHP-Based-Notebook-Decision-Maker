@@ -13,6 +13,6 @@ class AggregationPriorities:
         for i in range(self.num_of_objects):
             sum = 0
             for j in range(self.num_of_experts):
-                sum += self.experts_importance[i] * self.list_of_vectors[j][i]
+                sum += self.experts_importance[j] * self.list_of_vectors[j][i]
             vec.append(sum)
         return vec

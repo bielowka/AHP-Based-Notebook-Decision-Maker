@@ -18,6 +18,7 @@ class AggregationJudgments:
         for i in range(self.num_of_objects):
             for j in range(i,self.num_of_objects):
                 self.matrix.put_obj(i,j,self.calculate_geometric_mean(i,j))
+        return self.matrix
 
 if __name__ == "__main__":
     k = AggregationJudgments(4,3,[1,1,1,1],[[[1,2,4/5],[1/2,1,1/4],[5/4,4,1]],
