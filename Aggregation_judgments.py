@@ -1,12 +1,12 @@
 from Matrix import Matrix
 
 class AggregationJudgments:
-    def __init__(self, num_of_experts, num_of_objects, experts_importance, list_of_matrix):
+    def __init__(self, num_of_experts, num_of_objects, experts_importance, list_of_matrix, title):
         self.num_of_experts = num_of_experts
         self.num_of_objects = num_of_objects
         self.experts_importance = experts_importance
         self.list_of_matrix = list_of_matrix
-        self.matrix = Matrix(self.num_of_objects, [], "object_judgment_by_criteria")
+        self.matrix = Matrix(self.num_of_objects, [], title)
 
     def calculate_geometric_mean(self, x, y):
         result = 1

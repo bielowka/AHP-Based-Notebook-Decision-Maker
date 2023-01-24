@@ -72,19 +72,18 @@ if __name__ == "__main__":
     ]
 
     # PROPERTIES
-    SHOW_INCONSISTENCY = True
     NUMBER_OF_EXPERTS = 2
     EXPERTS_PRIORITIES = [0.7, 0.3]
     assert sum(EXPERTS_PRIORITIES) == 1
 
     # MAIN
-    experts = [Expert(i, EXPERTS_PRIORITIES[i], criteria, has_subcriteria, crit_to_subcrit) for i in range(NUMBER_OF_EXPERTS)]
+    experts = [Expert(i, EXPERTS_PRIORITIES[i], criteria, has_subcriteria, crit_to_subcrit) for i in
+               range(NUMBER_OF_EXPERTS)]
 
     for e in experts:
         experts_answer(e)
 
-    if SHOW_INCONSISTENCY:
-        subcrit_matrixes_for_idx = []
+    subcrit_matrixes_for_idx = []
 
     subcrit_vectors = []
 
@@ -96,19 +95,18 @@ if __name__ == "__main__":
                 tmp2 = []
                 for x in range(NUMBER_OF_EXPERTS):
                     tmp2.append(tmp[x][j])
-                agrr = AggregationJudgments(NUMBER_OF_EXPERTS,objects_num,EXPERTS_PRIORITIES,tmp2)
+                agrr = AggregationJudgments(NUMBER_OF_EXPERTS, objects_num, EXPERTS_PRIORITIES, tmp2, crit_to_subcrit[i][j])
                 matrices.append(agrr.get_aggregated_matrix())
 
-            if SHOW_INCONSISTENCY:
-                matricess = [(Saaty_index(x.A), x.title[12:]) for x in matrices]
-                subcrit_matrixes_for_idx.append(matricess)
+            matricess = [(Saaty_index(x.A), x.title) for x in matrices]
+            subcrit_matrixes_for_idx.append(matricess)
 
             vectors = [x.to_vector() for x in matrices]
 
             Cs = []
             for e in range(NUMBER_OF_EXPERTS):
                 Cs.append(experts[e].subcrit_importance_matrices[i].to_vector())
-            aggr = AggregationPriorities(NUMBER_OF_EXPERTS,len(crit_to_subcrit[i]),EXPERTS_PRIORITIES,Cs)
+            aggr = AggregationPriorities(NUMBER_OF_EXPERTS, len(crit_to_subcrit[i]), EXPERTS_PRIORITIES, Cs)
             C = aggr.get_aggregated_vector()
 
             vectors_calculations = Vectors_calculations(objects_num, len(C), vectors, C)
@@ -123,13 +121,12 @@ if __name__ == "__main__":
         tmp = []
         for e in range(NUMBER_OF_EXPERTS):
             tmp.append(experts[e].crit_matrices[i])
-        aggr = AggregationJudgments(NUMBER_OF_EXPERTS,len(flat_criteria),EXPERTS_PRIORITIES,tmp)
+        aggr = AggregationJudgments(NUMBER_OF_EXPERTS, len(flat_criteria), EXPERTS_PRIORITIES, tmp, criteria[i])
         flat_criteria_matrices.append(aggr.get_aggregated_matrix())
 
     flat_criteria_vectors = [x.to_vector() for x in flat_criteria_matrices]
 
-    if SHOW_INCONSISTENCY:
-        flat_criteria_matrices_for_idx = [[(Saaty_index(x.A), x.title[12:])] for x in flat_criteria_matrices]
+    flat_criteria_matrices_for_idx = [[(Saaty_index(x.A), x.title)] for x in flat_criteria_matrices]
 
     vectors = []
     for i in range(len(criteria)):
@@ -149,9 +146,6 @@ if __name__ == "__main__":
     final_calculation = Vectors_calculations(objects_num, len(criteria), vectors, C)
     res_vec = final_calculation.objects_values()
     results = [(res_vec[i], i) for i in range(objects_num)]
-    results.sort(key=lambda x: x[0]*(-1))
+    results.sort(key=lambda x: x[0] * (-1))
 
-    results_presentation(results, subcrit_matrixes_for_idx + flat_criteria_matrices_for_idx if SHOW_INCONSISTENCY else None)
-
-
-
+    results_presentation(results, subcrit_matrixes_for_idx + flat_criteria_matrices_for_idx)
