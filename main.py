@@ -49,8 +49,7 @@ def experts_answer(expert):
 if __name__ == "__main__":
     # DATA
     criteria = ["Cena", 'Wygląd', "Bateria", "Specyfikacja"]
-    has_subcriteria = [False, False, True, True]
-    subcriteria2 = ["Pojemnosc baterii", "Czas ładowania"]
+    has_subcriteria = [False, False, False, True]
     subcriteria3 = [
         "Procesor",
         "Karta graficzna",
@@ -58,7 +57,7 @@ if __name__ == "__main__":
         "Dysk",
         "Rodzielczość ekranu",
     ]
-    crit_to_subcrit = [None, None, subcriteria2, subcriteria3]
+    crit_to_subcrit = [None, None, None, subcriteria3]
 
     objects_num = 3
     objects_data = [
